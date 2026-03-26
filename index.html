@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory Orbit</title>
+    <meta
+      name="description"
+      content="Offline-first memory calendar with local folder storage"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-layer"></div>
+
+    <header class="topbar">
+      <div class="brand-wrap">
+        <h1>Memory Orbit</h1>
+        <p>Private calendar memories stored in your own folder</p>
+      </div>
+      <div class="folder-actions">
+        <button id="pick-folder-btn" class="btn primary">Choose Folder</button>
+        <button id="reload-btn" class="btn ghost" disabled>Reload</button>
+        <button id="change-passphrase-btn" class="btn ghost" disabled>Change Passphrase</button>
+        <div class="background-picker">
+          <button id="background-btn" class="btn ghost">Background</button>
+          <div id="background-menu" class="background-menu" hidden>
+            <button class="background-option" type="button" data-theme="ocean">Ocean</button>
+            <button class="background-option" type="button" data-theme="sunset">Sunset</button>
+            <button class="background-option" type="button" data-theme="forest">Forest</button>
+            <button class="background-option" type="button" data-theme="night">Night</button>
+          </div>
+        </div>
+        <div id="encryption-badge" class="folder-pill encryption-pill">Encryption: Off</div>
+        <div id="folder-name" class="folder-pill">No folder selected</div>
+      </div>
+    </header>
+
+    <main class="matrix-layout">
+      <section class="panel calendar-panel">
+        <div class="clock-strip">
+          <div id="clock-date">-</div>
+          <div id="clock-time">-</div>
+        </div>
+
+        <div class="calendar-toolbar">
+          <div class="calendar-nav">
+            <button id="prev-month" class="icon-btn" aria-label="Previous month">&#10094;</button>
+            <button id="today-btn" class="btn tiny">Today</button>
+            <button id="next-month" class="icon-btn" aria-label="Next month">&#10095;</button>
+          </div>
+
+          <div class="month-year-controls">
+            <select id="month-select" aria-label="Month"></select>
+            <select id="year-select" aria-label="Year"></select>
+          </div>
+        </div>
+
+        <div class="calendar-grid" id="calendar-grid"></div>
+      </section>
+
+      <section class="panel composer-panel">
+        <div class="composer-title">Write Highlights For Selected Date</div>
+        <div id="selected-date-label" class="selected-date-label">No date selected</div>
+
+        <textarea
+          id="message-input"
+          placeholder="Write your memory, highlight, or note. Then click Send..."
+          rows="6"
+        ></textarea>
+
+        <div id="image-preview-list" class="image-preview-list"></div>
+
+        <div class="composer-actions">
+          <input id="image-input" type="file" accept="image/*" multiple hidden />
+          <button id="add-image-btn" class="btn">Add Images</button>
+          <button id="emoji-btn" class="btn">Emoji</button>
+          <button id="send-btn" class="btn primary send-btn" disabled>Send</button>
+        </div>
+
+        <div id="emoji-picker" class="emoji-picker" hidden></div>
+      </section>
+
+      <section class="panel timeline-panel">
+        <div class="timeline-header">
+          <h2 id="timeline-date-title">Memories</h2>
+          <span id="timeline-count">0 items</span>
+        </div>
+        <div id="timeline-list" class="timeline-list"></div>
+      </section>
+    </main>
+
+    <footer class="status-bar">
+      <span id="status-text">Select a folder to start.</span>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "memory-orbit",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Memory Orbit advanced Node.js web application",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node dist/server.js",
+    "dev": "tsx server.ts"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.6.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
