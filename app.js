@@ -11,7 +11,6 @@ const HANDLE_DB_NAME = "memory-orbit-handles";
 const HANDLE_STORE_NAME = "handles";
 const HANDLE_KEY = "root-folder";
 const SESSION_STATE_KEY = "memory-orbit-session";
-const BACKGROUND_THEME_KEY = "memory-orbit-theme";
 
 const MONTHS = [
   "January",
@@ -29,48 +28,6 @@ const MONTHS = [
 ];
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const THEME_PRESETS = {
-  ocean: {
-    "--bg-1": "#081420",
-    "--bg-2": "#0d2336",
-    "--bg-3": "#102b45",
-    "--panel": "rgba(8, 16, 26, 0.68)",
-    "--panel-border": "rgba(122, 203, 255, 0.24)",
-    "--accent": "#35d9ff",
-    "--accent-2": "#55ffbe",
-    "--muted": "#95b8ce",
-  },
-  sunset: {
-    "--bg-1": "#2b0f1a",
-    "--bg-2": "#5c1f2e",
-    "--bg-3": "#8f3d2d",
-    "--panel": "rgba(37, 12, 20, 0.72)",
-    "--panel-border": "rgba(255, 167, 126, 0.3)",
-    "--accent": "#ff8f5a",
-    "--accent-2": "#ffd27a",
-    "--muted": "#edbfac",
-  },
-  forest: {
-    "--bg-1": "#081910",
-    "--bg-2": "#123726",
-    "--bg-3": "#1b4f37",
-    "--panel": "rgba(10, 26, 18, 0.72)",
-    "--panel-border": "rgba(146, 227, 160, 0.27)",
-    "--accent": "#6ce995",
-    "--accent-2": "#b8f27a",
-    "--muted": "#9fc9ad",
-  },
-  night: {
-    "--bg-1": "#09090f",
-    "--bg-2": "#181629",
-    "--bg-3": "#1f2238",
-    "--panel": "rgba(14, 13, 24, 0.74)",
-    "--panel-border": "rgba(183, 176, 255, 0.28)",
-    "--accent": "#a7b7ff",
-    "--accent-2": "#79e1ff",
-    "--muted": "#a7accf",
-  },
-};
 const EMOJIS = [
   "😀",
   "😄",
@@ -120,9 +77,6 @@ const ui = {
   pickFolderBtn: document.querySelector("#pick-folder-btn"),
   reloadBtn: document.querySelector("#reload-btn"),
   changePassphraseBtn: document.querySelector("#change-passphrase-btn"),
-  backgroundBtn: document.querySelector("#background-btn"),
-  backgroundMenu: document.querySelector("#background-menu"),
-  backgroundOptions: Array.from(document.querySelectorAll(".background-option")),
   encryptionBadge: document.querySelector("#encryption-badge"),
   folderName: document.querySelector("#folder-name"),
   statusText: document.querySelector("#status-text"),
@@ -161,7 +115,6 @@ function init() {
   buildMonthYearOptions();
   buildEmojiPicker();
   startClock();
-  restoreBackgroundTheme();
   restoreSessionState();
   renderCalendar();
   bindEvents();
@@ -178,27 +131,6 @@ function bindEvents() {
   ui.reloadBtn.addEventListener("click", reloadCurrentDate);
   if (ui.changePassphraseBtn) {
     ui.changePassphraseBtn.addEventListener("click", rotateFolderPassphrase);
-  }
-  if (ui.backgroundBtn && ui.backgroundMenu) {
-    ui.backgroundBtn.addEventListener("click", (event) => {
-      event.stopPropagation();
-      toggleBackgroundMenu();
-    });
-
-    ui.backgroundOptions.forEach((option) => {
-      option.addEventListener("click", () => {
-        const theme = option.dataset.theme || "ocean";
-        applyBackgroundTheme(theme);
-        hideBackgroundMenu();
-        setStatus(`Background changed to ${theme}.`);
-      });
-    });
-
-    document.addEventListener("click", (event) => {
-      if (!ui.backgroundMenu.contains(event.target) && !ui.backgroundBtn.contains(event.target)) {
-        hideBackgroundMenu();
-      }
-    });
   }
 
   ui.prevMonthBtn.addEventListener("click", () => {
@@ -252,58 +184,10 @@ function bindEvents() {
   ui.sendBtn.addEventListener("click", saveCurrentMemory);
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      hideBackgroundMenu();
-    }
     if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
       if (!ui.sendBtn.disabled) saveCurrentMemory();
     }
   });
-}
-
-function toggleBackgroundMenu() {
-  if (!ui.backgroundMenu) return;
-  const hidden = ui.backgroundMenu.hasAttribute("hidden");
-  if (hidden) ui.backgroundMenu.removeAttribute("hidden");
-  else ui.backgroundMenu.setAttribute("hidden", "");
-}
-
-function hideBackgroundMenu() {
-  if (!ui.backgroundMenu) return;
-  ui.backgroundMenu.setAttribute("hidden", "");
-}
-
-function applyBackgroundTheme(themeName) {
-  const resolvedTheme = themeName in THEME_PRESETS ? themeName : "ocean";
-  const theme = THEME_PRESETS[resolvedTheme];
-  Object.entries(theme).forEach(([key, value]) => {
-    document.documentElement.style.setProperty(key, value);
-  });
-  ui.backgroundOptions.forEach((option) => {
-    option.classList.toggle("active", option.dataset.theme === resolvedTheme);
-  });
-  persistBackgroundTheme(resolvedTheme);
-}
-
-function restoreBackgroundTheme() {
-  try {
-    const stored = localStorage.getItem(BACKGROUND_THEME_KEY);
-    if (!stored || !(stored in THEME_PRESETS)) {
-      applyBackgroundTheme("ocean");
-      return;
-    }
-    applyBackgroundTheme(stored);
-  } catch {
-    applyBackgroundTheme("ocean");
-  }
-}
-
-function persistBackgroundTheme(themeName) {
-  try {
-    localStorage.setItem(BACKGROUND_THEME_KEY, themeName);
-  } catch {
-    // Ignore storage errors.
-  }
 }
 
 async function pickFolderFlow() {
